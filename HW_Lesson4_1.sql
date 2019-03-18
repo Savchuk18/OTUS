@@ -1,22 +1,20 @@
-/*
+п»ї/*
 
 */
--- Вложенный запрос с WHERE, вернул 0, т.е., нет продажников, у которых нет продаж...
+-- Р’Р»РѕР¶РµРЅРЅС‹Р№ Р·Р°РїСЂРѕСЃ СЃ WHERE, РІРµСЂРЅСѓР» 0, С‚.Рµ., РЅРµС‚ РїСЂРѕРґР°Р¶РЅРёРєРѕРІ, Сѓ РєРѕС‚РѕСЂС‹С… РЅРµС‚ РїСЂРѕРґР°Р¶...
    SELECT DISTINCT P.FullName
   FROM [Application].[People] AS P
   WHERE P.IsSalesperson=1 AND  NOT Exists  (SELECT 1 from [Sales].[Orders] AS O WHERE O.SalespersonPersonID = P.PersonID   )
 
 
--- с WITH то же самое  
+-- СЃ WITH С‚Рѕ Р¶Рµ СЃР°РјРѕРµ  
     ;
   WITH PeopleGR (Seller)
   AS
   (
   SELECT DISTINCT [SalespersonPersonID]
   FROM [Sales].[Orders]
-  
     )
-
 SELECT [FullName]
 FROM [Application].[People]
 WHERE IsSalesperson=1 AND [PersonID] NOT IN (SELECT Seller FROM PeopleGR)
@@ -24,14 +22,14 @@ WHERE IsSalesperson=1 AND [PersonID] NOT IN (SELECT Seller FROM PeopleGR)
   
   
 
-  -- Проверки, должен ли быть 0? Т.е., у всех ли продажников есть продажи?
+  -- РџСЂРѕРІРµСЂРєРё, РґРѕР»Р¶РµРЅ Р»Рё Р±С‹С‚СЊ 0? Рў.Рµ., Сѓ РІСЃРµС… Р»Рё РїСЂРѕРґР°Р¶РЅРёРєРѕРІ РµСЃС‚СЊ РїСЂРѕРґР°Р¶Рё?
     SELECT DISTINCT 
 	P.IsSalesperson
 	,P.FullName
   FROM [Sales].[Orders] AS O
   JOIN [Application].[People] AS P ON P.PersonID = O.SalespersonPersonID
--- Вернулось 10 строк (можно, конечно, было просто посчитать, как в следующем примере), т.е., 10 человек продавали, а сколько продажников?  
+-- Р’РµСЂРЅСѓР»РѕСЃСЊ 10 СЃС‚СЂРѕРє (РјРѕР¶РЅРѕ, РєРѕРЅРµС‡РЅРѕ, Р±С‹Р»Рѕ РїСЂРѕСЃС‚Рѕ РїРѕСЃС‡РёС‚Р°С‚СЊ, РєР°Рє РІ СЃР»РµРґСѓСЋС‰РµРј РїСЂРёРјРµСЂРµ), С‚.Рµ., 10 С‡РµР»РѕРІРµРє РїСЂРѕРґР°РІР°Р»Рё, Р° СЃРєРѕР»СЊРєРѕ РїСЂРѕРґР°Р¶РЅРёРєРѕРІ?  
   SELECT COUNT(*)
   FROM [Application].[People]
   WHERE IsSalesperson=1
-  -- Вернулось 10, значит, всего продажников 10, и, скорее всего, результат правильный (если я правильно всё сделал)
+  -- Р’РµСЂРЅСѓР»РѕСЃСЊ 10, Р·РЅР°С‡РёС‚, РІСЃРµРіРѕ РїСЂРѕРґР°Р¶РЅРёРєРѕРІ 10, Рё, СЃРєРѕСЂРµРµ РІСЃРµРіРѕ, СЂРµР·СѓР»СЊС‚Р°С‚ РїСЂР°РІРёР»СЊРЅС‹Р№ (РµСЃР»Рё СЏ РїСЂР°РІРёР»СЊРЅРѕ РІСЃС‘ СЃРґРµР»Р°Р»)
