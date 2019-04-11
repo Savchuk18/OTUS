@@ -1,0 +1,14 @@
+﻿
+(31440 rows affected)
+
+ SQL Server Execution Times:
+   CPU time = 328 ms,  elapsed time = 2261 ms.
+-------------- Another request --------------
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+
+(31440 rows affected)
+
+ SQL Server Execution Times:
+   CPU time = 20313 ms,  elapsed time = 20547 ms.
