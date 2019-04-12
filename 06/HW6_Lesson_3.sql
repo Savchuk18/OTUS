@@ -13,22 +13,19 @@
 
 DECLARE @Patt varchar(128) = N'%[A-Z,0-9]%' -- Для выделения буквоцифры из наименования, чтобы не по  " или ' нумеровать
 SELECT 
-[StockItemID]
-,[StockItemName]
-,[UnitPrice]
-,S.SupplierName
-,[Brand]
-,[TypicalWeightPerUnit]
-
-,ROW_NUMBER() OVER(PARTITION BY SUBSTRING(SI.StockItemName,PATINDEX(@Patt,SI.StockItemName),1) ORDER BY SI.StockItemName) AS [По 1-ой букве]
-,COUNT(*) OVER() AS [Всего товаров]
-,COUNT(*) OVER(PARTITION BY SUBSTRING(SI.StockItemName,PATINDEX(@Patt,SI.StockItemName),1) ) AS [Товаров по 1-ой букве]
-,LEAD(StockItemID) OVER(ORDER BY [StockItemName]) AS [Следующий id (по полному названию)]
-,LAG(StockItemID) OVER(ORDER BY [StockItemName]) AS [предыдущий id (по полному названию)]
-,CASE WHEN LAG([StockItemName],2) OVER(ORDER BY [StockItemName]) is Null THEN 'No items'
-		ELSE  LAG([StockItemName],2) OVER(ORDER BY [StockItemName]) 
-		END AS [предыдущее название (по полному названию)]
-,DENSE_RANK() OVER(ORDER BY [TypicalWeightPerUnit]) AS [Масса за единицу]
+	[StockItemID]
+	,[StockItemName]
+	,[UnitPrice]
+	,S.SupplierName
+	,[Brand]
+	,[TypicalWeightPerUnit]
+	,ROW_NUMBER() OVER(PARTITION BY SUBSTRING(SI.StockItemName,PATINDEX(@Patt,SI.StockItemName),1) ORDER BY SI.StockItemName) AS [По 1-ой букве]
+	,COUNT(*) OVER() AS [Всего товаров]
+	,COUNT(*) OVER(PARTITION BY SUBSTRING(SI.StockItemName,PATINDEX(@Patt,SI.StockItemName),1) ) AS [Товаров по 1-ой букве]
+	,LEAD(StockItemID) OVER(ORDER BY [StockItemName]) AS [Следующий id (по полному названию)]
+	,LAG(StockItemID) OVER(ORDER BY [StockItemName]) AS [предыдущий id (по полному названию)]
+	,LAG([StockItemName],2,'No items') OVER(ORDER BY [StockItemName]) AS [предыдущее название (по полному названию)]
+	,NTILE(30) OVER(ORDER BY [TypicalWeightPerUnit]) AS [Масса за единицу]
 FROM [Warehouse].[StockItems] AS SI
 JOIN [Purchasing].[Suppliers] AS S ON S.SupplierID = SI.SupplierID
 

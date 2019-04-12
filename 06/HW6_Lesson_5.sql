@@ -8,26 +8,26 @@
 -- в условии указано, что нужна дата продажи, и не сказано - первая или последняя,
 -- поэтому вроде получается, что все продажи, какие должны быть...
 
-;WITH ListProduct (PrID,PrPrice,CliID)
-AS
-(
-SELECT DISTINCT	-- DISTINCT отрабатывает поле оконных функций, поэтому сначала уберём дубли
-	[StockItemID]
-	,[UnitPrice]
-	,I.CustomerID -- можно, в принципе здесь и название клиента подцепить, но оставим как есть.
-FROM [Sales].[InvoiceLines] AS IL
-JOIN [Sales].[Invoices] AS I ON I.[InvoiceID] = IL.InvoiceID
-)
-,
-RankListPro (PrID,PrPrice,CliID,rnk)
-AS
-(
-SELECT PrId
-	,PrPrice
-	,CliID
-	,RANK() OVER(Partition BY Cliid ORDER BY PrPrice DESC) as rnk
-FROM ListProduct
-)
+;WITH ListProduct (ProductID,ProductPrice,ClientID)
+	AS
+	(
+		SELECT DISTINCT	-- DISTINCT отрабатывает поле оконных функций, поэтому сначала уберём дубли
+			[StockItemID]
+			,[UnitPrice]
+			,I.CustomerID -- можно, в принципе здесь и название клиента подцепить, но оставим как есть.
+		FROM [Sales].[InvoiceLines] AS IL
+		JOIN [Sales].[Invoices] AS I ON I.[InvoiceID] = IL.InvoiceID
+	)
+	,
+	RankListPro (PrID,PrPrice,CliID,rnk)
+	AS
+	(
+		SELECT ProductID
+			,ProductPrice
+			,ClientID
+			,RANK() OVER(Partition BY ClientId ORDER BY ProductPrice DESC) as rnk
+		FROM ListProduct
+	)
 SELECT 
 	R.CliID AS 'ID Клиента'
 	,[CustomerName] AS 'Название клиента'

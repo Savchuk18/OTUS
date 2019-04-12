@@ -10,10 +10,11 @@ Bonus из предыдущей темы
 SELECT TOP (10)
 	I.CustomerID
 	,MAX([CustomerName])
-	--,COUNT([InvoiceID]) AS [COunt]
+	,COUNT([InvoiceID]) AS [COunt]
+	--,I.InvoiceDate
 FROM [Sales].[Invoices] AS I
 JOIN [Sales].[Customers] AS C ON C.CustomerID = I.CustomerID
-WHERE YEAR(I.InvoiceDate) <= '2016' AND MONTH(I.InvoiceDate) < 5
+WHERE I.InvoiceDate < '20160501' 
 GROUP BY I.CustomerID
 HAVING COUNT([InvoiceID]) > 30
 ORDER BY I.CustomerID, COUNT([InvoiceID]) --[COunt]

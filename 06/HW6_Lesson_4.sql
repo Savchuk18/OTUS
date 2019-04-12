@@ -5,7 +5,6 @@
 */
 
 SELECT DISTINCT
---*
 	I.[SalespersonPersonID] AS 'ID продавца'
 	,P.[FullName] AS 'Полное имя продавца'
 	,LAST_VALUE(I.CustomerID) OVER(PARTITION BY I.SalespersonPersonID ORDER BY I.InvoiceDate, I.[InvoiceID] ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING) AS 'ID Последнего клиента'
@@ -18,4 +17,3 @@ JOIN [Sales].[CustomerTransactions] AS CT ON CT.InvoiceID = I.InvoiceID
 JOIN [Sales].[Customers] AS C ON C.CustomerID = I.CustomerID
 WHERE IsSalesperson=1
 
-*/
