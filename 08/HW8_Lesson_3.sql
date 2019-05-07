@@ -10,7 +10,7 @@ CountryId	CountryName	Code
 3	Albania	8
 
 */
-
+-- Первый вариант
 SELECT [CountryName],Codes.IsoAlpha3Code AS Code
 FROM [Application].[Countries] AS C
 CROSS APPLY (
@@ -19,3 +19,15 @@ CROSS APPLY (
 				SELECT CAST([IsoNumericCode] as varchar(3)) FROM [Application].[Countries] AS C2 WHERE C2.CountryID = C.CountryID
 			) AS COdes
 ORDER BY [CountryName]--, Code
+
+-- Вариант с UNPIVOT
+
+;WITH ForUnPivot (CountryName, AlphaCode, NumericCode)
+AS
+(
+	SELECT CountryName, [IsoAlpha3Code], CAST(IsoNumericCode AS nvarchar(3))
+	FROM [Application].[Countries]
+)
+SELECT CountryName, Code 
+FROM ForUnPivot
+UNPIVOT (Code FOR ValueSelect IN (AlphaCode, NumericCode) ) AS Unp
